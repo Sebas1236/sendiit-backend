@@ -71,6 +71,14 @@ const loginUsuario = async(req, res = response) => {
             });
         }
 
+        //Comprobamos si la cuenta está verificada
+        if(usuario.status !== 'Active'){
+            return res.status(401).json({
+                ok: false,
+                msg: 'Cuenta inactiva. Por favor verifique su Email!',
+            });
+        }
+
         // Generar nuestro JWT
         const token = await generarJWT( usuario.id, usuario.name );
 

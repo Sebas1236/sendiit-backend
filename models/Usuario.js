@@ -17,7 +17,16 @@ const UsuarioSchema = new Schema({
     password: {
         type: String,
         required: true,
-    }
+    },
+    status: {
+        type: String,
+        enum: ['Pending', 'Active'],
+        default: 'Pending',
+    },
+    confirmationCode: {
+        type: String,
+        unique: true
+    },
 });
 
 
