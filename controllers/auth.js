@@ -2,6 +2,7 @@ const { response } = require('express');
 const bcrypt = require('bcryptjs');
 const Usuario = require('../models/Usuario');
 const { generarJWT } = require('../helpers/jwt');
+const { sendConfirmationEmail } = require('../helpers/nodemailer.config');
 
 const crearUsuario = async (req, res = response) => {
 
@@ -22,20 +23,33 @@ const crearUsuario = async (req, res = response) => {
         const salt = bcrypt.genSaltSync();
         usuario.password = bcrypt.hashSync(password, salt);
 
-        //Grabar en BD
-        await usuario.save();
-
+        // TODO2: ACTUALIZAR CONFIRMATIONCODE EN LA BD
         // Generar JWT
         const token = await generarJWT( usuario.id, usuario.name );
-
+        const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        let code = '';
+        for (let i = 0; i < 25; i++) {
+            code += characters[Math.floor(Math.random() * characters.length )];
+        }
+        usuario.confirmationCode = code;
+        //Grabar en BD
+        await usuario.save();
         //Middleware -> Función que se ejecuta antes de cualquier otra cosa
+
+        //Enviamos el correo
+        sendConfirmationEmail(
+            usuario.name,
+            usuario.email,
+            usuario.confirmationCode,
+        );
 
         res.status(201).json({
             ok: true,
             uid: usuario.id,
             name: usuario.name,
             last_name: usuario.last_name,
-            token
+            token,
+            msg: "Registro exitoso! Por favor cheque su correo",
         });
     } catch (error) {
         console.log(error);
@@ -78,7 +92,8 @@ const loginUsuario = async(req, res = response) => {
                 msg: 'Cuenta inactiva. Por favor verifique su Email!',
             });
         }
-
+        //TODO: GENERAR JWT PARA CORREO
+  
         // Generar nuestro JWT
         const token = await generarJWT( usuario.id, usuario.name );
 
@@ -86,7 +101,7 @@ const loginUsuario = async(req, res = response) => {
             ok: true,
             uid: usuario.id,
             name: usuario.name,
-            token,
+            token, 
         });
 
     } catch (error) {
@@ -97,6 +112,32 @@ const loginUsuario = async(req, res = response) => {
         });
     }
 
+};
+
+//Función para el correo de verificación
+const verificarUsuario = async(req, res = response) => {
+    //TODO: BUSCAR POR TOKEN
+    // console.log( req.params.confirmationCode );
+    const confirmationCode = req.params.confirmationCode;
+    // const { confirmationCode } = req.body;
+    // console.log(confirmationCode);
+    try {
+        const usuario = await Usuario.findOne({ confirmationCode });
+        //Para retornar la última opción actualizada el tercer parámetro
+        const usuarioActualizado = await Usuario.findOneAndUpdate( {confirmationCode}, {$set: {'status': 'Active'}}, { new: true } );
+        
+        res.json({
+            ok: true,
+            status: usuario.status,
+            msg: 'Cuenta activada con éxito',
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Código incorrecto'
+        });
+    }
 };
 
 
@@ -121,5 +162,6 @@ const revalidarToken = async(req, res = response) => {
 module.exports = {
     crearUsuario,
     loginUsuario,
+    verificarUsuario,
     revalidarToken,
 };

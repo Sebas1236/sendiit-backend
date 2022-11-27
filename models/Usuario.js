@@ -25,7 +25,7 @@ const UsuarioSchema = new Schema({
     },
     confirmationCode: {
         type: String,
-        unique: true
+        unique: true,
     },
 });
 
