@@ -18,6 +18,23 @@ const generarJWT = ( uid, name ) => {
 
 };
 
+const generarResetJWT = ( uid, password ) => {
+    return new Promise( (resolve, reject) => {
+        const payload = { uid, password };
+        jwt.sign( payload, process.env.SECRET_JWT_SEED + password, {
+            expiresIn: '15m'}, (err,token) => {
+                if( err ){
+                    console.log(err);
+                    reject('No se pudo generar el token');
+                }
+
+                resolve( token );
+
+            });
+    });
+};
+
 module.exports = {
     generarJWT,
+    generarResetJWT,
 };
