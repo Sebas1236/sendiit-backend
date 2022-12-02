@@ -21,7 +21,8 @@ const generarJWT = ( uid, name ) => {
 const generarResetJWT = ( uid, password ) => {
     return new Promise( (resolve, reject) => {
         const payload = { uid, password };
-        jwt.sign( payload, process.env.SECRET_JWT_SEED + password, {
+        const secret = process.env.SECRET_JWT_SEED + password
+        jwt.sign( payload, secret, {
             expiresIn: '15m'}, (err,token) => {
                 if( err ){
                     console.log(err);

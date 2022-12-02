@@ -27,6 +27,7 @@ router.post(
 router.post(
     '/',
     [//middlewares
+        check('email', 'El email es obligatorio').not().isEmpty(),
         check('email', 'El email es obligatorio').isEmail(),
         check('password', 'El password debe de ser de 6 caracteres').isLength({ min:6 }),
         validarCampos

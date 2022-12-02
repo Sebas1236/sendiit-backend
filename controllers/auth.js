@@ -68,6 +68,13 @@ const loginUsuario = async (req, res = response) => {
     const { email, password } = req.body;
 
     try {
+        if( !email || !password ){
+            return res.status(400).json({
+                ok: false,
+                msg: 'Faltan campos por llenar'
+            });
+        }
+
         const usuario = await Usuario.findOne({ email });
 
         if (!usuario) {

@@ -27,6 +27,9 @@ const UsuarioSchema = new Schema({
         type: String,
         unique: true,
     },
+    phone: {
+        type:String,
+    }
 });
 
 

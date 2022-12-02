@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const Usuario = require('../models/Usuario');
 const { generarResetJWT } = require('../helpers/jwt');
+const { sendRecoverEmail } = require('../helpers/nodemailer.config');
 
 
 //** Restablecer pass actualiza la password
@@ -22,9 +23,18 @@ const restablecerPass = async (req, res = response) => {
 
         //Validar el JWT
         const secret = process.env.SECRET_JWT_SEED + usuario.password;
-
-        const payload = jwt.verify(token, secret);
-        console.log(payload);
+        // console.log(secret);
+        try {
+            const payload = jwt.verify(token, secret);
+        } catch (error) {
+            //El token sólo es válido 1 vez
+            if(error.message==='invalid signature'){
+                return res.status(500).json({
+                    ok: false,
+                    msg: 'El token ha expirado, favor de solicitar uno nuevo'
+                });
+            }
+        }        
         //TODO: VERIFICAR TOKEN EXPIRADO
 
         if( password !== password2 ){
@@ -34,16 +44,15 @@ const restablecerPass = async (req, res = response) => {
             })
         }
 
+
         //Encriptar contraseña
         const salt = bcrypt.genSaltSync();
         const resetPassword = bcrypt.hashSync(password, salt);
         //TODO: ASEGURARSE QUE NO SEA LA MISMA CONTRASEÑA
         //1. Buscar el usuario con el payload email, id
         //2. Actualizar la contraseña
-        console.log(id);
         const usuarioActualizado = await Usuario.findOneAndUpdate( { email: usuario.email } , {$set:{'password':resetPassword}}, { new: true });
         // const usuarioActualizado = await Usuario.findOne({email: usuario.email});
-        console.log(usuarioActualizado.email);
 
         res.json({
             ok: true,
@@ -116,6 +125,11 @@ const recuperarPass = async (req, res = response) => {
 
         const link = `http://localhost:4000/reset-password/${uid}/${token}`;
         //TODO: ENVIAR EL LINK AL EMAIL
+        sendRecoverEmail(
+            usuario.name,
+            email,
+            uid, token,
+        );
         res.json({
             ok: true,
             msg: 'Recuperar contraseña',
