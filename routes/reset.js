@@ -12,20 +12,15 @@ const { validarCampos } = require('../middlewares/validar-campos');
 const router = Router();
 //TODO: IMPLEMENTAR CHECKS
 
-//Recuperar contraseña
-router.post(
-    '/forgot-password',
-    recuperarPass,
-);
-
+// Reestablecer contraseña
 router.post(
     '/reset-password/:id/:token',
-    restablecerPass,
-);
-
-router.get(
-    '/reset-password/:id/:token',
-    restablecerPassGet,
+    [//middlewares
+        check('password', 'El password debe ser de mínimo 6 caracteres').isLength({ min:6 }),
+        check('password2', 'El password debe ser de mínimo 6 caracteres').isLength({ min:6 }),
+        validarCampos
+    ],
+    restablecerPass
 );
 
 module.exports = router;
