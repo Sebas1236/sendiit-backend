@@ -12,22 +12,10 @@ const { validarCampos } = require('../middlewares/validar-campos');
 const router = Router();
 //TODO: IMPLEMENTAR CHECKS
 
-//Recuperar contraseña
-//Deprecated
-router.post(
-    '/forgot-password',
-    recuperarPass,
-);
-
+// Reestablecer contraseña
 router.post(
     '/reset-password/:id/:token',
     restablecerPass,
-);
-
-//Deprecated
-router.get(
-    '/reset-password/:id/:token',
-    restablecerPassGet,
 );
 
 module.exports = router;
