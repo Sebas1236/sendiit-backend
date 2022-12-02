@@ -13,6 +13,7 @@ const router = Router();
 //TODO: IMPLEMENTAR CHECKS
 
 //Recuperar contraseña
+//Deprecated
 router.post(
     '/forgot-password',
     recuperarPass,
@@ -23,6 +24,7 @@ router.post(
     restablecerPass,
 );
 
+//Deprecated
 router.get(
     '/reset-password/:id/:token',
     restablecerPassGet,
