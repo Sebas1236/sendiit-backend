@@ -15,7 +15,12 @@ const router = Router();
 // Reestablecer contraseña
 router.post(
     '/reset-password/:id/:token',
-    restablecerPass,
+    [//middlewares
+        check('password', 'El password debe ser de mínimo 6 caracteres').isLength({ min:6 }),
+        check('password2', 'El password debe ser de mínimo 6 caracteres').isLength({ min:6 }),
+        validarCampos
+    ],
+    restablecerPass
 );
 
 module.exports = router;
