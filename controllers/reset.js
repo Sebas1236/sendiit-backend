@@ -73,32 +73,6 @@ const restablecerPass = async (req, res = response) => {
     }
 }
 
-const restablecerPassGet = async(req, res = response) =>{
-    const { id, token } = req.params;
-    try {
-        // Revisar si existe el id en la bd
-        const usuario = await Usuario.findById( id );
-        if( !usuario ){
-            return res.status(400).json({
-                ok: false,
-                msg: 'Id inválido',
-            })
-        }
-        //Tenemos un id y usuario válidos
-        //Validar el JWT
-        const secret = process.env.SECRET_JWT_SEED + usuario.password;
-        const payload = jwt.verify(token, secret);
-        res.json({
-            ok: true,
-            msg: 'Restablecer contraseña',
-            email: usuario.email,
-        });
-
-    } catch (error) {
-        console.log(error);
-    }
-}
-
 const recuperarPass = async (req, res = response) => {
     const { email } = req.body;
     try {
@@ -149,6 +123,5 @@ const recuperarPass = async (req, res = response) => {
 module.exports = {
     recuperarPass,
     restablecerPass,
-    // recuperarPassGet,
-    restablecerPassGet
+
 }
