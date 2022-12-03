@@ -23,9 +23,9 @@ router.post(
     restablecerPass,
 );
 
-router.get(
-    '/reset-password/:id/:token',
-    restablecerPassGet,
-);
+// router.get(
+//     '/reset-password/:id/:token',
+//     restablecerPassGet,
+// );
 
 module.exports = router;

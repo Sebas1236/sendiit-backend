@@ -24,7 +24,6 @@ const crearUsuario = async (req, res = response) => {
         const salt = bcrypt.genSaltSync();
         usuario.password = bcrypt.hashSync(password, salt);
 
-        // TODO2: ACTUALIZAR CONFIRMATIONCODE EN LA BD
         // Generar JWT
         const token = await generarJWT(usuario.id, usuario.name);
         const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -68,7 +67,7 @@ const loginUsuario = async (req, res = response) => {
     const { email, password } = req.body;
 
     try {
-        if( !email || !password ){
+        if (!email || !password) {
             return res.status(400).json({
                 ok: false,
                 msg: 'Faltan campos por llenar'
@@ -109,6 +108,8 @@ const loginUsuario = async (req, res = response) => {
             ok: true,
             uid: usuario.id,
             name: usuario.name,
+            last_name: usuario.last_name,
+            email, password: usuario.password,
             token,
         });
 
@@ -154,12 +155,22 @@ const revalidarToken = async (req, res = response) => {
 
     // Generar un nuevo JWT y retornarlo en esta peticion
     const token = await generarJWT(uid, name);
+    try {
+        const usuario = await Usuario.findById(uid);
 
-    res.json({
-        ok: true,
-        uid, name,
-        token,
-    });
+        res.json({
+            ok: true,
+            uid, name,
+            token,
+            email: usuario.email,
+            last_name: usuario.last_name,
+            password: usuario.password,
+            phone: usuario.phone
+        });
+    } catch (error) {
+        console.log(error);
+    }
+
 
 };
 

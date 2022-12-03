@@ -38,7 +38,7 @@ const sendRecoverEmail = (name, email, uid, token) => {
         html: `<div><h1>Restablecer contraseña</h1>
         <h2>Hola ${ name }</h2>
         <p>Se ha solicitado restablecer tu contraseña, da click en el siguiente link: </p>
-        <a href=http://127.0.0.1:5173/reset-password/${uid}/${token}/> Da click aquí </a>
+        <a href=http://127.0.0.1:5173/auth/reset-password/${uid}/${token}/> Da click aquí </a>
         <p>Si no has sido tú quien ha solicitado este cambio, por favor ignora este email.</p>
         </div>
         `

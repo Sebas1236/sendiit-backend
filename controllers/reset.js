@@ -11,6 +11,7 @@ const { sendRecoverEmail } = require('../helpers/nodemailer.config');
 const restablecerPass = async (req, res = response) => {
     const { id, token } = req.params;
     const { password, password2 } = req.body;
+    // console.log({ id, token, password, password2 });
     //Revisar si existe el id en db
     try {
         const usuario = await Usuario.findById(id);
