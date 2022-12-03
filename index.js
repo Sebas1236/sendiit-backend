@@ -19,7 +19,13 @@ app.use( express.static('public') );
 app.use( express.json() );
 
 // Rutas
+// Autenticación y Registro. Verificar usuario
 app.use('/api/auth', require('./routes/auth'));
+//Usuario
+app.use('/', require('./routes/users'));
+
+// Solicitar cambio de contraseña. Recuperar password
+app.use('/', require('./routes/reset'));
 // TODO: Login, Crear cuenta
 
 //  Escuchar peticiones
