@@ -1,37 +1,50 @@
 const { response } = require("express");
 const Usuario = require("../models/Usuario");
-const bcrypt = require('bcryptjs');
 
-const actualizarUsuario = async(req, res = response) => {
+const getUsuario = async (req, res = response) => {
 
-    const usuarioId = req.params.id;
+    const { uid } = req.body;
+    try {
+        const usuario = await Usuario.findById( uid );
+        res.json({
+            ok: true,
+            usuario,
+        });
+    } catch (error) {
+        console.log(error);
+        //Problema interno
+        res.status(500).json({
+            ok: false,
+            msg: 'Hubo un problema encontrando al usuario'
+        });
+    }
+}
+
+const actualizarUsuario = async (req, res = response) => {
+
+    const { uid, name, last_name, phone } = req.body;
     // console.log(req.body);
     try {
 
         //Verificar si existe
-        const usuario = await Usuario.findById( usuarioId );
-        if(!usuario){
+        const usuario = await Usuario.findById(uid);
+        if (!usuario) {
             res.status(404).json({
                 ok: false,
                 msg: 'Usuario no existe por ese id'
             });
         }
-        //TODO: la contraseña se obtendrá de la bd y no del req.body
-        const nuevoUsuario = {
-            ...req.body,
-            status: 'Active',
-            confirmationCode: ''
-        }
-        const usuarioActualizado = await Usuario.findByIdAndUpdate( usuarioId, nuevoUsuario , {new:true});
+        usuario.name = name;
+        usuario.last_name = last_name;
+        usuario.phone = phone;
+        //TODO PASSWORD - Campos en formulario vacíos
+        const usuarioActualizado = await usuario.save();
+        // console.log(usuarioActualizado);
         res.json({
             ok: true,
             usuarioActualizado,
-            uid: usuarioActualizado.id,
-            name: usuarioActualizado.name,
-            last_name: usuarioActualizado.last_name,
-            email: usuarioActualizado.email, password: usuarioActualizado.password,
         })
-        
+
     } catch (error) {
         console.log(error);
         //Problema interno
@@ -44,4 +57,5 @@ const actualizarUsuario = async(req, res = response) => {
 
 module.exports = {
     actualizarUsuario,
+    getUsuario
 }
