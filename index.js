@@ -23,7 +23,8 @@ app.use( express.json() );
 app.use('/api/auth', require('./routes/auth'));
 //Usuario
 app.use('/api/user', require('./routes/users'));
-
+//Tarjetas
+app.use('/api/cards', require('./routes/cards'));
 // Solicitar cambio de contraseña. Recuperar password
 app.use('/', require('./routes/reset'));
 // TODO: Login, Crear cuenta
