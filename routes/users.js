@@ -11,7 +11,7 @@ const router = Router();
 
 //Actualizar Usuario
 //TODO: Añadir checks
-router.post(
+router.get(
     '/', 
     validarJWT, 
     getUsuario
