@@ -108,8 +108,9 @@ const loginUsuario = async (req, res = response) => {
             ok: true,
             uid: usuario.id,
             name: usuario.name,
-            last_name: usuario.last_name,
-            email, password: usuario.password,
+            last_name: usuario.last_name, 
+            phone: usuario.phone,
+            email: usuario.email,
             token,
         });
 
@@ -157,15 +158,15 @@ const revalidarToken = async (req, res = response) => {
     const token = await generarJWT(uid, name);
     try {
         const usuario = await Usuario.findById(uid);
+        // console.log(usuario.phone);
 
         res.json({
             ok: true,
-            uid, name,
-            token,
-            email: usuario.email,
+            uid, name: usuario.name,
+            phone: usuario.phone,
             last_name: usuario.last_name,
-            password: usuario.password,
-            phone: usuario.phone
+            email: usuario.email,
+            token,
         });
     } catch (error) {
         console.log(error);

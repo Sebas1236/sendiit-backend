@@ -21,7 +21,6 @@ const validarJWT = ( req, res=response, next ) => {
         req.uid = uid;
         req.name = name;
         req.last_name = last_name;
-
     } catch (error) {
         return res.status(401).json({
             ok: false,

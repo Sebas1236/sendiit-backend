@@ -1,16 +1,21 @@
 /* 
-    Ruta de Usuarios
-    host + /
+    Ruta de Usuarios / User
+    host + /api/user
 */
 
 const { Router } = require('express');
-const { actualizarUsuario } = require('../controllers/users');
+const { actualizarUsuario, getUsuario } = require('../controllers/users');
 const { validarJWT } = require('../middlewares/validar-jwt');
 const router = Router();
 //Tienen que pasar por la validación del JWT
 
 //Actualizar Usuario
 //TODO: Añadir checks
-router.put('/:id', validarJWT, actualizarUsuario);
+router.get(
+    '/', 
+    validarJWT, 
+    getUsuario
+);
+router.post('/profile', validarJWT, actualizarUsuario);
 
 module.exports = router;
