@@ -1,4 +1,5 @@
 const { Schema, model } = require('mongoose');
+const Joi = require('joi');
 
 const UsuarioSchema = new Schema({
     name: {
@@ -42,6 +43,20 @@ const UsuarioSchema = new Schema({
     }
 });
 
+const Usuario = model('Usuario', UsuarioSchema);
+
+// function validarUsuario(usuario){
+//     const schema = Joi.object({
+//         name: Joi.string().min(3).max(50).required(),
+//         last_name: Joi.string().min(3).max(50).required(),
+//         email: Joi.string().min(5).max(255).required().email(),
+//         password: Joi.string().min(6).max(1024).required(),
+//         phone: Joi.string().min(5).max(50) 
+//     });
+
+//     return schema.validate(usuario);
+// }
+
 
 //En mongoDb se guarda la colección como usuarios
-module.exports = model('Usuario', UsuarioSchema );
+module.exports.Usuario = Usuario;

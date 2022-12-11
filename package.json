@@ -4,6 +4,7 @@
   "description": "Backend de Sendiit, proyecto para la materia Análisis y Diseño de Sistemas",
   "main": "index.js",
   "scripts": {
+    "test": "jest --watchAll --verbose --coverage --runInBand",
     "dev": "npx nodemon index.js",
     "start": "node index.js"
   },
@@ -16,9 +17,15 @@
     "ejs": "^3.1.8",
     "express": "^4.18.2",
     "express-validator": "^6.14.2",
+    "joi": "^17.7.0",
+    "joi-objectid": "^4.0.2",
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.29.4",
     "mongoose": "^6.7.3",
     "nodemailer": "^6.8.0"
+  },
+  "devDependencies": {
+    "jest": "^29.3.1",
+    "supertest": "^6.3.2"
   }
 }

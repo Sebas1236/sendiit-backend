@@ -1,7 +1,7 @@
 const { response } = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const Usuario = require('../models/Usuario');
+const { Usuario } = require('../models/Usuario');
 const { generarResetJWT } = require('../helpers/jwt');
 const { sendRecoverEmail } = require('../helpers/nodemailer.config');
 

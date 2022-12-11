@@ -6,16 +6,19 @@
 const { Router } = require('express');
 const { actualizarUsuario, getUsuario } = require('../controllers/users');
 const { validarJWT } = require('../middlewares/validar-jwt');
+const validarObjectId = require('../middlewares/validar-objectid');
 const router = Router();
 //Tienen que pasar por la validación del JWT
 
 //Actualizar Usuario
 //TODO: Añadir checks
-router.post(
+router.get(
     '/', 
-    validarJWT, 
+    validarJWT,
+    validarObjectId,
     getUsuario
 );
+
 router.post('/profile', validarJWT, actualizarUsuario);
 
 module.exports = router;

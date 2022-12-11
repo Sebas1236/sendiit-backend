@@ -12,8 +12,7 @@ const generarJWT = ( uid, name ) => {
                 }
 
                 resolve( token );
-
-            });
+        });
     });
 
 };
@@ -30,8 +29,7 @@ const generarResetJWT = ( uid, password ) => {
                 }
 
                 resolve( token );
-
-            });
+        });
     });
 };
 

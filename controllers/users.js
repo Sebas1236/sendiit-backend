@@ -1,19 +1,25 @@
 const { response } = require("express");
-const Usuario = require("../models/Usuario");
+const { Usuario } = require("../models/Usuario");
 
 const getUsuario = async (req, res = response) => {
 
     const { uid } = req.body;
     try {
         const usuario = await Usuario.findById( uid );
+        if (!usuario) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'Usuario no existe por ese id'
+            });
+        }
         res.json({
             ok: true,
-            usuario,
+            usuario
         });
     } catch (error) {
         console.log(error);
         //Problema interno
-        res.status(500).json({
+        return res.status(500).json({
             ok: false,
             msg: 'Hubo un problema encontrando al usuario'
         });

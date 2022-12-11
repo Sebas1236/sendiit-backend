@@ -13,14 +13,13 @@ const validarJWT = ( req, res=response, next ) => {
     }
 
     try {
-        const { uid, name, last_name } = jwt.verify(
+        const { uid, name } = jwt.verify(
             token,
             process.env.SECRET_JWT_SEED
         );
 
         req.uid = uid;
         req.name = name;
-        req.last_name = last_name;
     } catch (error) {
         return res.status(401).json({
             ok: false,
