@@ -82,14 +82,14 @@ const recuperarPass = async (req, res = response) => {
         if (!usuario) {
             return res.status(400).json({
                 ok: false,
-                msg: 'El usuario no existe con ese email'
+                msg: 'El usuario con ese email no existe en el sistema'
             });
         }
 
         if (usuario.status !== 'Active') {
             return res.status(400).json({
                 ok: false,
-                msg: 'Es necesario tener una cuenta activa'
+                msg: 'Tu cuenta no ha sido activada aún'
             });
         }
 

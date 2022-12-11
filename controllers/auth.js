@@ -79,7 +79,7 @@ const loginUsuario = async (req, res = response) => {
         if (!usuario) {
             return res.status(400).json({
                 ok: false,
-                msg: 'El usuario no existe con ese email'
+                msg: 'Usuario y/o contraseña incorrectos'
             });
         }
 
@@ -88,7 +88,7 @@ const loginUsuario = async (req, res = response) => {
         if (!validPassword) {
             return res.status(400).json({
                 ok: false,
-                msg: 'Password incorrecto',
+                msg: 'Usuario y/o contraseña incorrectos',
             });
         }
 
