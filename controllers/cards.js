@@ -2,7 +2,7 @@ const { response } = require("express")
 const Card = require('../models/Card');
 
 const getCreditCards = async (req, res = response) => {
-    console.log(req.uid);
+    // console.log(req.uid);
     const creditCards = await Card.find({user: req.uid})
                                                 .populate('user', 'name');
 
@@ -16,7 +16,6 @@ const createCreditCard = async (req, res = response) => {
 
     //TODO: VALIDAR QUE SEA ÚNICO EL NÚMERO DE TARJETA
     const creditCard = new Card( req.body );
-
     try {
 
         creditCard.user = req.uid;
@@ -40,7 +39,7 @@ const createCreditCard = async (req, res = response) => {
 const updateCreditCard = async(req, res = response) => {
     const { cardName, cardNumber, month, year } = req.body;
     const creditCardId = req.params.id;
-    console.log(cardName);
+    // console.log(cardName);
     try {
 
         //Verificar si existe
