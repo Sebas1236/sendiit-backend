@@ -114,8 +114,8 @@ const sendConfirmationEmail = (name, email, confirmationCode) => {
         </div>
         `,
         attachments : [{
-            filename: 'sendiit-original.png',
-            path: __dirname + '/sendiit-original.png',
+            filename: 'logo_sendiit-light.png',
+            path: __dirname + '/logo_sendiit-light.png',
             cid: 'sendiitLogo'
         }]
 
@@ -226,8 +226,8 @@ const sendRecoverEmail = (name, email, uid, token) => {
         </div>
         `,
         attachments : [{
-            filename: 'sendiit-original.png',
-            path: __dirname + '/sendiit-original.png',
+            filename: 'logo_sendiit-light.png',
+            path: __dirname + '/logo_sendiit-light.png',
             cid: 'sendiitLogo'
         }]
 
