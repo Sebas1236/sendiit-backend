@@ -40,7 +40,12 @@ const UsuarioSchema = new Schema({
         type:String,
         minlength: 5,
         maxlenght: 50
-    }
+    },
+    // role: {
+    //     type: String,
+    //     enum: ['Cliente', 'Repartidor', 'Administrador'],
+    //     required: true
+    // }
 });
 
 const Usuario = model('Usuario', UsuarioSchema);

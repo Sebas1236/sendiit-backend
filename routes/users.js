@@ -12,10 +12,10 @@ const router = Router();
 
 //Actualizar Usuario
 //TODO: Añadir checks
-router.get(
+router.get( // Obtiene el usuario que hace esta petición get
     '/', 
     validarJWT,
-    validarObjectId,
+    // validarObjectId,
     getUsuario
 );
 

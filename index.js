@@ -27,6 +27,10 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/user', require('./routes/users'));
 //Tarjetas
 app.use('/api/cards', require('./routes/cards'));
+//Paquetes
+app.use('/api/paquetes', require('./routes/paquetes'));
+//Casilleros
+app.use('/api/casilleros', require('./routes/casilleros'));
 // Solicitar cambio de contraseña. Recuperar password
 app.use('/', require('./routes/reset'));
 // TODO: Login, Crear cuenta
