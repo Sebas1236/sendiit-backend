@@ -53,25 +53,16 @@ const paqueteSchema = new mongoose.Schema({
             maxlength: 255
         }
     },
-    dimensiones: {
-        largo: {
-            type: Number,
-            required: true,
-            min: 0,
-            max: 20
-        },
-        ancho: {
-            type: Number,
-            required: true,
-            min: 0,
-            max: 16
-        },
-        alto: {
+    dimensiones: [{
             type: Number,
             required: true,
             min: 0,
             max: 25
-        },
+    }],
+    tamano: {
+        type: String,
+        enum: ['Pequeño', 'Mediano', 'Grande'],
+        required: true,
     },
     descripcion: {
         type: String,

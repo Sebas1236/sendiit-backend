@@ -1,5 +1,6 @@
 const { response } = require("express");
-const { findByIdAndUpdate } = require("../models/Paquete");
+const { cabePaquete, tamanoPaquete } = require('../helpers/valTamPaquete');
+const Casillero = require("../models/Casillero");
 const Paquete = require('../models/Paquete');
 
 const getPaquetes = async (req, res = response) => {
@@ -48,13 +49,42 @@ const getPaquete = async (req, res = response) => {
 
 const postPaquete = async (req, res = response) => {
     // TODO: validar req.body con joi
-    // URGENTE: CALCULAR COSTO SEGÚN LA DISTANCIA 
+    // URGENTE: CALCULAR COSTO
+
+    const cabe = cabePaquete(req.body.dimensiones);
+    if(!cabe) return res.status(400).send('El paquete no cabe en ningún casillero.');
+
+    const tamano = tamanoPaquete(req.body.dimensiones);
+
+    // El sistema asignará un casillero automáticamente
+    // Necesita una ubicacion origen y destino
+    const casilleroOrigen = await Casillero
+        .findOne({ 
+            tamano,
+            ubicacion: req.body.origen,
+            ocupado: false 
+        })
+        .select( '_id' );
+
+    if(!casilleroOrigen) return res.status(400).send('No hay casilleros disponibles para este paquete');
+
+    const casilleroDestino = await Casillero
+        .findOne({ 
+            tamano,
+            ubicacion: req.body.destino,
+            ocupado: false 
+        })
+        .select( '_id' );
+
+    if(!casilleroDestino) return res.status(400).send('No hay casilleros disponibles para este paquete');
+
     const paquete = new Paquete({
-        casilleroOrigen: req.body.casilleroOrigen,
-        casilleroDestino: req.body.casilleroDestino,
+        casilleroOrigen,
+        casilleroDestino,
         usuario: req.body.usuario,
         destinatario: req.body.destinatario,
         dimensiones: req.body.dimensiones,
+        tamano,
         descripcion: req.body.descripcion,
         costo: 350
     });
@@ -75,7 +105,7 @@ const postPaquete = async (req, res = response) => {
 }
 
 const putPaquete = async (req, res = response) => {
-    const paquete = await findByIdAndUpdate( req.params.id, )
+    // const paquete = await findByIdAndUpdate( req.params.id, )
 }
 
 module.exports = {
