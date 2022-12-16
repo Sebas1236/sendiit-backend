@@ -1,7 +1,10 @@
 const { response } = require("express");
 const { cabePaquete, tamanoPaquete } = require('../helpers/valTamPaquete');
 const Casillero = require("../models/Casillero");
+const {Usuario} = require("../models/Usuario");
 const Paquete = require('../models/Paquete');
+const { sendDataPackage } = require('../helpers/nodemailer.config');
+const qr= require("qrcode");
 
 const getPaquetes = async (req, res = response) => {
     const paquetes = await Paquete
@@ -65,7 +68,7 @@ const postPaquete = async (req, res = response) => {
             ocupado: false 
         })
         .select( '_id' );
-
+    
     if(!casilleroOrigen) return res.status(400).send('No hay casilleros disponibles para este paquete');
 
     const casilleroDestino = await Casillero
@@ -77,7 +80,8 @@ const postPaquete = async (req, res = response) => {
         .select( '_id' );
 
     if(!casilleroDestino) return res.status(400).send('No hay casilleros disponibles para este paquete');
-
+    
+    
     const paquete = new Paquete({
         casilleroOrigen,
         casilleroDestino,
@@ -88,12 +92,30 @@ const postPaquete = async (req, res = response) => {
         descripcion: req.body.descripcion,
         costo: 350
     });
+
+    const codigo= await qr.toDataURL(paquete.id)
+    paquete.qrOrigen=codigo
+    console.log(paquete.qrOrigen)
     try{
         const result = await paquete.save();
         res.json({
             ok: true,
             result
         });
+
+         //Leemos el usuario
+         const usuario = await Usuario.findById(req.body.usuario).populate('email').populate('name')
+         //Enviamos los datos a la funcion para enviar el correo
+         sendDataPackage( 
+            req.body.origen,
+            req.body.destino,
+             usuario,
+             tamano,
+             req.body.destinatario,
+             req.body.descripcion,
+             codigo
+             );
+
     }
     catch (error) {
         console.log(error);
