@@ -4,7 +4,6 @@ const { cabePaquete, tamanoPaquete } = require('../helpers/valTamPaquete');
 const Casillero = require("../models/Casillero");
 const {Usuario} = require("../models/Usuario");
 const Paquete = require('../models/Paquete');
-const { Usuario } = require('../models/Usuario');
 const qr= require("qrcode");
 
 const getPaquetes = async (req, res = response) => {
@@ -91,11 +90,16 @@ const postPaquete = async (req, res = response) => {
         casilleroDestino,
         usuario: req.uid,
         destinatario: req.body.destinatario,
-        dimensiones: [4, 16, 10],
+        // dimensiones: [4, 16, 10],
         tamano,
         descripcion: req.body.descripcion,
         costo: 350
     });
+
+    // Cambia el estado de los casilleros usados a ocupado
+    await Casillero.findByIdAndUpdate(casilleroOrigen, { ocupado: true });
+    await Casillero.findByIdAndUpdate(casilleroDestino, { ocupado: true });
+
     const codigo= await qr.toDataURL(paquete.id)
     paquete.qrOrigen=codigo
     // console.log(paquete.qrOrigen)
