@@ -1,7 +1,10 @@
 const { response } = require("express");
+const { sendDataPackage } = require("../helpers/nodemailer.config");
 const { cabePaquete, tamanoPaquete } = require('../helpers/valTamPaquete');
 const Casillero = require("../models/Casillero");
 const Paquete = require('../models/Paquete');
+const { Usuario } = require('../models/Usuario');
+const qr= require("qrcode");
 
 const getPaquetes = async (req, res = response) => {
     const paquetes = await Paquete
@@ -9,7 +12,7 @@ const getPaquetes = async (req, res = response) => {
         .populate('casilleroOrigen')
         .populate('casilleroDestino')
         .populate('usuario');
-        
+
 
     res.json({
         ok: true,
@@ -23,7 +26,7 @@ const getPaquetesCliente = async (req, res = response) => {
         .populate('casilleroOrigen')
         .populate('casilleroDestino')
         .populate('usuario');
-        
+
 
     res.json({
         ok: true,
@@ -50,50 +53,72 @@ const getPaquete = async (req, res = response) => {
 const postPaquete = async (req, res = response) => {
     // TODO: validar req.body con joi
     // URGENTE: CALCULAR COSTO
+    // const cabe = cabePaquete(req.body.dimensiones);
+    // if(!cabe) return res.status(400).send('El paquete no cabe en ningún casillero.');
 
-    const cabe = cabePaquete(req.body.dimensiones);
-    if(!cabe) return res.status(400).send('El paquete no cabe en ningún casillero.');
-
-    const tamano = tamanoPaquete(req.body.dimensiones);
+    // const tamano = tamanoPaquete(req.body.dimensiones);
+    console.log(req.body);
+    const tamano = req.body.tamano;
 
     // El sistema asignará un casillero automáticamente
     // Necesita una ubicacion origen y destino
+    console.log(req.body.origen);
+    console.log(req.body.tamano);
     const casilleroOrigen = await Casillero
-        .findOne({ 
+        .findOne({
             tamano,
             ubicacion: req.body.origen,
-            ocupado: false 
+            ocupado: false
         })
-        .select( '_id' );
+        .select('_id');
+    console.log(casilleroOrigen);
 
-    if(!casilleroOrigen) return res.status(400).send('No hay casilleros disponibles para este paquete');
+    if (!casilleroOrigen) return res.status(400).send('No hay casilleros disponibles para este paquete');
 
     const casilleroDestino = await Casillero
-        .findOne({ 
+        .findOne({
             tamano,
             ubicacion: req.body.destino,
-            ocupado: false 
+            ocupado: false
         })
-        .select( '_id' );
+        .select('_id');
 
-    if(!casilleroDestino) return res.status(400).send('No hay casilleros disponibles para este paquete');
+    if (!casilleroDestino) return res.status(400).send('No hay casilleros disponibles para este paquete');
 
     const paquete = new Paquete({
         casilleroOrigen,
         casilleroDestino,
-        usuario: req.body.usuario,
+        usuario: req.uid,
         destinatario: req.body.destinatario,
-        dimensiones: req.body.dimensiones,
+        dimensiones: [4, 16, 10],
         tamano,
         descripcion: req.body.descripcion,
         costo: 350
     });
-    try{
+    const codigo= await qr.toDataURL(paquete.id)
+    paquete.qrOrigen=codigo
+    // console.log(paquete.qrOrigen)
+    try {
         const result = await paquete.save();
         res.json({
             ok: true,
             result
         });
+
+        //Leemos el usuario
+        const usuario = await Usuario.findById(req.uid).populate('email').populate('name');
+        //Enviamos los datos a la funcion para enviar el correo
+        console.log(usuario);
+        sendDataPackage(
+            req.body.origen,
+            req.body.destino,
+            usuario,
+            email= req.body.destinatario.email,
+            tamano,
+            req.body.destinatario,
+            req.body.descripcion,
+            codigo
+        );
     }
     catch (error) {
         console.log(error);

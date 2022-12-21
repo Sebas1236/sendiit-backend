@@ -12,6 +12,14 @@ const Casillero = mongoose.model('Casillero', new mongoose.Schema({
         minlength: 3,
         maxlength: 50
     },
+    lng: {
+        type: Number,
+        required: true,
+    },
+    lat: {
+        type: Number,
+        required: true,
+    },
     ocupado: {
         type: Boolean,
         default: false
