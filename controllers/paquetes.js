@@ -2,6 +2,7 @@ const { response } = require("express");
 const { sendDataPackage } = require("../helpers/nodemailer.config");
 const { cabePaquete, tamanoPaquete } = require('../helpers/valTamPaquete');
 const Casillero = require("../models/Casillero");
+const {Usuario} = require("../models/Usuario");
 const Paquete = require('../models/Paquete');
 const { Usuario } = require('../models/Usuario');
 const qr= require("qrcode");
