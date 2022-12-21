@@ -105,7 +105,11 @@ const paqueteSchema = new mongoose.Schema({
         },
         desachado: {
             type: Date
-        }
+        },
+        qrOrigen:{
+            type: "String",
+            default: "sin qr"
+        },
     }
 });
 
