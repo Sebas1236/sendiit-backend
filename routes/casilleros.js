@@ -16,6 +16,6 @@ router.use(validarJWT);
 // router.get('/', getCasillerosPorUbiYTam);
 
 // GET casilleros disponibles dado un tamaño
-router.get('/', getAllPorTam);
+router.post('/', getAllPorTam);
 
 module.exports = router;

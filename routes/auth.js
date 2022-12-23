@@ -8,6 +8,7 @@ const { validarCampos } = require('../middlewares/validar-campos');
 
 const { crearUsuario, loginUsuario, verificarUsuario ,revalidarToken } = require('../controllers/auth');
 const { validarJWT } = require('../middlewares/validar-jwt');
+const { isRoleValid } = require('../helpers/db-validators');
 
 
 const router = Router();
@@ -19,6 +20,7 @@ router.post(
         check('email', 'El email es obligatorio').isEmail(),
         check('last_name', 'Los apellidos son obligatorios').not().isEmpty(),
         check('password', 'El password debe ser de mínimo 6 caracteres').isLength({ min:6 }),
+        check('role').custom( isRoleValid ),
         validarCampos
     ],
     crearUsuario

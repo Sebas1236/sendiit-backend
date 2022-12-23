@@ -7,7 +7,7 @@ const getCasillerosPorUbiYTam = async (req, res = response) => {
 
     const numCasilleros = await Casillero
         .find({ 
-            ubicacion: req.body.ubicacion.toLowerCase(),
+            ubicacion: req.body.ubicacion,
             tamano: req.body.tamano,
             ocupado: false
         })
@@ -24,6 +24,8 @@ const getAllPorTam = async (req, res = response) => {
     // S (4.3 x 16 x 25) , M (9.5 x 16 x 25) y L (20 x 16 x 25)
     let numCasilleros = [];
     let num;
+    console.log(req.body);
+    console.log(req.body.tamano);
 
     const ubicaciones = await Casillero
         .find()

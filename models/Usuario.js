@@ -41,11 +41,12 @@ const UsuarioSchema = new Schema({
         minlength: 5,
         maxlenght: 50
     },
-    // role: {
-    //     type: String,
-    //     enum: ['Cliente', 'Repartidor', 'Administrador'],
-    //     required: true
-    // }
+    role: {
+        type: String,
+        required: true,
+        default: 'Cliente',
+        enum: ['Cliente', 'Repartidor', 'Administrador'],
+    },
 });
 
 const Usuario = model('Usuario', UsuarioSchema);

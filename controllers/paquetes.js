@@ -4,6 +4,7 @@ const { cabePaquete, tamanoPaquete } = require('../helpers/valTamPaquete');
 const Casillero = require("../models/Casillero");
 const Paquete = require('../models/Paquete');
 const qr= require("qrcode");
+const { Usuario } = require('../models/Usuario');
 
 const getPaquetes = async (req, res = response) => {
     const paquetes = await Paquete
