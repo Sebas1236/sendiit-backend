@@ -4,8 +4,8 @@
 */
 
 const { Router } = require('express');
-const { actualizarUsuario, getUsuario } = require('../controllers/users');
-const { validarJWT } = require('../middlewares/validar-jwt');
+const { actualizarUsuario, getUsuario, getUsuariosByRole } = require('../controllers/users');
+const { validarJWT, validarJWTAdmin } = require('../middlewares/validar-jwt');
 const validarObjectId = require('../middlewares/validar-objectid');
 const router = Router();
 //Tienen que pasar por la validación del JWT
@@ -20,5 +20,7 @@ router.get( // Obtiene el usuario que hace esta petición get
 );
 
 router.post('/profile', validarJWT, actualizarUsuario);
+
+router.post('/usuarios', validarJWTAdmin, getUsuariosByRole);
 
 module.exports = router;

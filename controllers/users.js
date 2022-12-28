@@ -5,7 +5,7 @@ const getUsuario = async (req, res = response) => {
 
     const uid = req.uid;
     try {
-        const usuario = await Usuario.findById( uid );
+        const usuario = await Usuario.findById(uid);
         if (!usuario) {
             return res.status(404).json({
                 ok: false,
@@ -24,6 +24,17 @@ const getUsuario = async (req, res = response) => {
             msg: 'Hubo un problema encontrando al usuario'
         });
     }
+};
+
+const getUsuariosByRole = async (req, res = response) => {
+    const { role } = req.body;
+    // console.log(role);
+    const usuarios = await Usuario.find({ role });
+
+    res.json({
+        ok: true,
+        usuarios,
+    })
 }
 
 const actualizarUsuario = async (req, res = response) => {
@@ -63,5 +74,6 @@ const actualizarUsuario = async (req, res = response) => {
 
 module.exports = {
     actualizarUsuario,
-    getUsuario
+    getUsuario,
+    getUsuariosByRole,
 }
