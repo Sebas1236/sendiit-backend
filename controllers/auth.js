@@ -25,7 +25,7 @@ const crearUsuario = async (req, res = response) => {
         usuario.password = bcrypt.hashSync(password, salt);
 
         // Generar JWT
-        const token = await generarJWT(usuario.id, usuario.name);
+        // const token = await generarJWT(usuario.id, usuario.name, usuario.role);
         const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         let code = '';
         for (let i = 0; i < 25; i++) {
@@ -48,7 +48,7 @@ const crearUsuario = async (req, res = response) => {
             uid: usuario.id,
             name: usuario.name,
             last_name: usuario.last_name,
-            token,
+            // token,
             msg: "Registro exitoso! Por favor cheque su correo",
         });
     } catch (error) {
@@ -102,11 +102,12 @@ const loginUsuario = async (req, res = response) => {
         //TODO: GENERAR JWT PARA CORREO
 
         // Generar nuestro JWT
-        const token = await generarJWT(usuario.id, usuario.name);
+        const token = await generarJWT(usuario.id, usuario.name, usuario.role);
 
         res.json({
             ok: true,
             uid: usuario.id,
+            role: usuario.role,
             name: usuario.name,
             last_name: usuario.last_name, 
             phone: usuario.phone,
@@ -152,10 +153,10 @@ const verificarUsuario = async (req, res = response) => {
 
 const revalidarToken = async (req, res = response) => {
 
-    const { uid, name } = req;
+    const { uid, name, role } = req;
 
     // Generar un nuevo JWT y retornarlo en esta peticion
-    const token = await generarJWT(uid, name);
+    const token = await generarJWT(uid, name, role);
     try {
         const usuario = await Usuario.findById(uid);
         // console.log(usuario.phone);
@@ -163,6 +164,7 @@ const revalidarToken = async (req, res = response) => {
         res.json({
             ok: true,
             uid, name: usuario.name,
+            role: usuario.role,
             phone: usuario.phone,
             last_name: usuario.last_name,
             email: usuario.email,
