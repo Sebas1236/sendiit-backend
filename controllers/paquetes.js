@@ -57,13 +57,13 @@ const postPaquete = async (req, res = response) => {
     // if(!cabe) return res.status(400).send('El paquete no cabe en ningún casillero.');
 
     // const tamano = tamanoPaquete(req.body.dimensiones);
-    console.log(req.body);
+    //console.log(req.body);
     const tamano = req.body.tamano;
 
     // El sistema asignará un casillero automáticamente
     // Necesita una ubicacion origen y destino
-    console.log(req.body.origen);
-    console.log(req.body.tamano);
+    //console.log(req.body.origen);
+    //console.log(req.body.tamano);
     const casilleroOrigen = await Casillero
         .findOne({
             tamano,
@@ -71,7 +71,7 @@ const postPaquete = async (req, res = response) => {
             ocupado: false
         })
         .select('_id');
-    console.log(casilleroOrigen);
+    //console.log(casilleroOrigen);
 
     if (!casilleroOrigen) return res.status(400).send('No hay casilleros disponibles para este paquete');
 
@@ -95,7 +95,6 @@ const postPaquete = async (req, res = response) => {
         descripcion: req.body.descripcion,
         costo: 350
     });
-
     // Cambia el estado de los casilleros usados a ocupado
     await Casillero.findByIdAndUpdate(casilleroOrigen, { ocupado: true });
     await Casillero.findByIdAndUpdate(casilleroDestino, { ocupado: true });
@@ -109,20 +108,14 @@ const postPaquete = async (req, res = response) => {
             ok: true,
             result
         });
-
-        //Leemos el usuario
         const usuario = await Usuario.findById(req.uid).populate('email').populate('name');
         //Enviamos los datos a la funcion para enviar el correo
-        console.log(usuario);
         sendDataPackage(
-            req.body.origen,
-            req.body.destino,
-            usuario,
-            email= req.body.destinatario.email,
-            tamano,
-            req.body.destinatario,
-            req.body.descripcion,
-            codigo
+           paquete,
+           usuario,
+           req.body.origen,
+           req.body.destino,
+           req.body.destinatario
         );
     }
     catch (error) {
