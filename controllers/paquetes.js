@@ -106,11 +106,12 @@ const postPaquete = async (req, res = response) => {
     await Casillero.findByIdAndUpdate(casilleroOrigen, { ocupado: true });
     await Casillero.findByIdAndUpdate(casilleroDestino, { ocupado: true });
 
-    const codigo = await qr.toDataURL(paquete.id)
+    const codigo = await qr.toDataURL(paquete.id);
     paquete.qrOrigen = codigo
     // console.log(paquete.qrOrigen)
     try {
         const result = await paquete.save();
+        console.log(result);
         res.json({
             ok: true,
             result

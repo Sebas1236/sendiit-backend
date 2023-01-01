@@ -78,7 +78,7 @@ const paqueteSchema = new mongoose.Schema({
     estadoActual: {
         type: String,
         enum: ['Por recibir', 'En espera', 'En camino', 'En locker de destino', 
-            'Recogido', 'En almacén', 'Desachado'],
+            'Recogido', 'En almacén', 'Desechado'],
         required: true,
         default: 'Por recibir'
     },
@@ -100,10 +100,10 @@ const paqueteSchema = new mongoose.Schema({
         recogido: {
             type: Date
         },
-        enAlmacén: {
+        enAlmacen: {
             type: Date
         },
-        desachado: {
+        desechado: {
             type: Date
         }
     },
