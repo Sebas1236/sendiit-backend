@@ -1,7 +1,8 @@
 const nodemailer = require('nodemailer');
-
+const { createPDF } = require("./createPDF");
 const user = process.env.EMAIL_USER;
 const pass = process.env.EMAIL_PASSWORD;
+
 
 //Para la conexión SMTP
 const transport = nodemailer.createTransport({
@@ -235,16 +236,15 @@ const sendRecoverEmail = (name, email, uid, token) => {
 }
 
 //Enviar correo información de envío
-const sendDataPackage = (origen, destino, usuario, email, tamano, destinatario, descripcion, codigo) => {
-    // console.log({origen, destino, usuario, email, tamano, destinatario, descripcion, codigo});
-    //console.log('Sending recover email...');
-    //console.log(`http://127.0.0.1:5173/auth/reset-password/${uid}/${token}/`);
-    transport.sendMail({
-        from: user,
-        to: usuario.email,
-        attachDataUrls: true,
-        subject: "Información de envío",
-        html: `
+const sendDataPackage = async (paquete, usuario, origen, destino, destinatario) => {
+    let pdfOutput = await createPDF(paquete, usuario, origen, destino, destinatario);
+    try {
+        transport.sendMail({
+            from: user,
+            to: usuario.email,
+            attachDataUrls: true,
+            subject: "Información de envío",
+            html: `
         <head>
         <style type='text/css'>
             div{
@@ -316,13 +316,13 @@ const sendDataPackage = (origen, destino, usuario, email, tamano, destinatario, 
                             <p style="font-size: 20px; font-weight: bold">Hola, <strong style="color: #E41F1A;"> ${usuario.name}</strong></p>
                             <p  style="font-size: 15px; line-height:23px;padding:5px 15px 15px;">Gracias por realizar tu pedido de envío en Sendiit.</p>
                             <p style="font-size: 20px; font-weight: bold">Detalles del envío.</p>
-                            <p  style="font-size: 15px; line-height:23px;padding:5px 15px 15px;">Descripción: ${descripcion}.</p>
+                            <p  style="font-size: 15px; line-height:23px;padding:5px 15px 15px;">Descripción: ${paquete.descripcion}.</p>
                             <p  style="font-size: 15px; line-height:23px;padding:5px 15px 15px;">Locker de origen: ${origen.charAt(0).toUpperCase() + origen.slice(1)}.</p>
                             <p  style="font-size: 15px; line-height:23px;padding:5px 15px 15px;">Locker de destino: ${destino.charAt(0).toUpperCase() + destino.slice(1)}.</p>
                             <p  style="font-size: 15px; line-height:23px;padding:5px 15px 15px;">Destinatario: ${destinatario.nombre}.</p>
-                            <p  style="font-size: 15px; line-height:23px;padding:5px 15px 15px;">Tamaño: ${tamano}.</p>
+                            <p  style="font-size: 15px; line-height:23px;padding:5px 15px 15px;">Tamaño: ${paquete.tamano}.</p>
                             <p  style="font-size: 15px; line-height:23px;padding:5px 15px 15px;">Código QR para locker de origen:.</p>
-                            <img src= ` + codigo + `>
+                            <img src= ` + paquete.qrOrigen + `>
                             <p  style="font-size: 15px; line-height:23px;padding:5px 15px 15px;">Para dejar el paquete en ${origen.charAt(0).toUpperCase() + origen.slice(1)} deberas escanear el código QR en el locker y depositar el paquete.</p>
                             </td>
                         </tr>
@@ -333,23 +333,29 @@ const sendDataPackage = (origen, destino, usuario, email, tamano, destinatario, 
             </center>
         </div>
         `,
-        attachments: [{
-            filename: 'logo_sendiit-light.png',
-            path: __dirname + '/logo_sendiit-light.png',
-            cid: 'sendiitLogo'
-        }]
+            attachments: [{
+                filename: 'logo_sendiit-light.png',
+                path: __dirname + '/logo_sendiit-light.png',
+                cid: 'sendiitLogo'
+            }, {
+                path: pdfOutput
+            }]
 
-    }).catch(error => console.log(error));
+        }).catch(error => console.log(error));
+    } catch (e) {
+        console.log(error);
+    }
 }
 
 const sendNewDeliveryManEmail = async (deliveryManName, email, token) => {
     console.log('Sending delivery man email...');
     console.log(`http://127.0.0.1:5173/auth/new-password/${token}/`);
-    transport.sendMail({
-        from: user,
-        to: email,
-        subject: "Bienvenido a Sendiit",
-        html: `
+    try {
+        transport.sendMail({
+            from: user,
+            to: email,
+            subject: "Bienvenido a Sendiit",
+            html: `
         <head>
         
         <style type='text/css'>
@@ -444,13 +450,16 @@ const sendNewDeliveryManEmail = async (deliveryManName, email, token) => {
             </center>
         </div>
         `,
-        attachments: [{
-            filename: 'logo_sendiit-light.png',
-            path: __dirname + '/logo_sendiit-light.png',
-            cid: 'sendiitLogo'
-        }]
+            attachments: [{
+                filename: 'logo_sendiit-light.png',
+                path: __dirname + '/logo_sendiit-light.png',
+                cid: 'sendiitLogo'
+            }]
 
-    }).catch(error => console.log(error));
+        }).catch(error => console.log(error));
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 module.exports = {
