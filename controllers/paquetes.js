@@ -3,21 +3,28 @@ const { sendDataPackage } = require("../helpers/nodemailer.config");
 const { cabePaquete, tamanoPaquete } = require('../helpers/valTamPaquete');
 const Casillero = require("../models/Casillero");
 const Paquete = require('../models/Paquete');
-const qr= require("qrcode");
+const qr = require("qrcode");
 const { Usuario } = require('../models/Usuario');
 
 const getPaquetes = async (req, res = response) => {
-    const paquetes = await Paquete
-        .find()
-        .populate('casilleroOrigen')
-        .populate('casilleroDestino')
-        .populate('usuario');
+    try {
+        const paquetes = await Paquete
+            .find()
+            .populate('casilleroOrigen')
+            .populate('casilleroDestino')
+            .populate('usuario');
 
-
-    res.json({
-        ok: true,
-        paquetes
-    });
+        res.json({
+            ok: true,
+            paquetes
+        });
+    } catch (error) {
+        console.log('Error cargando paquetes');
+        res.json({
+            ok: false,
+            msg: 'Error cargando paquetes',
+        })
+    }
 }
 
 const getPaquetesCliente = async (req, res = response) => {
@@ -100,8 +107,8 @@ const postPaquete = async (req, res = response) => {
     await Casillero.findByIdAndUpdate(casilleroOrigen, { ocupado: true });
     await Casillero.findByIdAndUpdate(casilleroDestino, { ocupado: true });
 
-    const codigo= await qr.toDataURL(paquete.id)
-    paquete.qrOrigen=codigo
+    const codigo = await qr.toDataURL(paquete.id)
+    paquete.qrOrigen = codigo
     // console.log(paquete.qrOrigen)
     try {
         const result = await paquete.save();
@@ -118,7 +125,7 @@ const postPaquete = async (req, res = response) => {
             req.body.origen,
             req.body.destino,
             usuario,
-            email= req.body.destinatario.email,
+            email = req.body.destinatario.email,
             tamano,
             req.body.destinatario,
             req.body.descripcion,

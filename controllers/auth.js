@@ -93,10 +93,16 @@ const loginUsuario = async (req, res = response) => {
         }
 
         //Comprobamos si la cuenta está verificada
-        if (usuario.status !== 'Active') {
+        if (usuario.status !== 'Active' && usuario.role === 'Cliente') {
             return res.status(401).json({
                 ok: false,
-                msg: 'Cuenta inactiva. Por favor verifique su Email!',
+                msg: 'Cuenta inactiva. Por favor verifique su email para activarla.',
+            });
+        }
+        if (usuario.status !== 'Active' && usuario.role === 'Repartidor') {
+            return res.status(401).json({
+                ok: false,
+                msg: 'Su cuenta se encuentra inactiva. Hable con el administrador en caso de cualquier inconveniencia.',
             });
         }
         //TODO: GENERAR JWT PARA CORREO
