@@ -3,14 +3,15 @@ const QRCode = require("qrcode");
 const Autotable = require('jspdf-autotable')
 var fs = require("fs");
 
-// Creating a document
-const pdf = new jsPDF({
-  orientation: "portrait", // should it be portrait or landscape?
-  unit: "mm", // unit of measure while adding stuff
-  format: "a4", // format can be string or array [x, y] in above units
-});
 
-const createPDF = async(paquete,usuario,origen,destino,destinatario) => {
+// Creating a document
+
+let createPDF = async(paquete,usuario,origen,destino,destinatario) => {
+  const pdf = new jsPDF({
+    orientation: "portrait", // should it be portrait or landscape?
+    unit: "mm", // unit of measure while adding stuff
+    format: "a4", // format can be string or array [x, y] in above units
+  });
   //console.log("Ancho: ", pdf.internal.pageSize.getWidth());
   //console.log("Altura: ", pdf.internal.pageSize.getHeight());
   var logo = fs.readFileSync(__dirname+'/logo_sendiit-light.png').toString('base64');
@@ -37,6 +38,7 @@ const createPDF = async(paquete,usuario,origen,destino,destinatario) => {
     body: [
       ['Cliente', usuario.name],
       ['Destinatario', destinatario.nombre],
+      ['Descripción', paquete.descripcion],
       ['Locker de origen', origen],
       ['Locker de destino', destino],
       ['Tamaño', paquete.tamano],
@@ -56,7 +58,9 @@ const createPDF = async(paquete,usuario,origen,destino,destinatario) => {
   pdf.setLineWidth(0.10);
   pdf.line(10, 210, 200, 210);
 
-  const pdfOutput = pdf.output("datauristring");
+  let pdfOutput = pdf.output("datauristring", {
+    filename: paquete.id
+  });
   //pdf.save("prueba.pdf");
   return pdfOutput;
 };
