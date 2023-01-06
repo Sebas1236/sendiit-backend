@@ -50,13 +50,13 @@ let createPDF = async(paquete,usuario,origen,destino,destinatario) => {
   pdf.setTextColor(0,0,0);
   pdf.setFontSize(10)
   pdf.setFont("helvetica");
-  pdf.text("Código QR para desbloquear el locker de origen "+ origen,60,120,"center");
+  pdf.text("Código QR para desbloquear el locker de origen "+ origen,60,130,"center");
   // Inserting qrCode
-  pdf.addImage(paquete.qrOrigen, "JPEG", 105-25, 130, 50, 50);
+  pdf.addImage(paquete.qrOrigen, "JPEG", 105-25, 140, 50, 50);
 
   // Adding lines
   pdf.setLineWidth(0.10);
-  pdf.line(10, 210, 200, 210);
+  pdf.line(10, 220, 200, 220);
 
   let pdfOutput = pdf.output("datauristring", {
     filename: paquete.id
