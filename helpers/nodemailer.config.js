@@ -102,7 +102,7 @@ const sendConfirmationEmail = (name, email, confirmationCode) => {
                               <h1 style="color:#212E46;">Confirmación de email</h1>
                               <p style="font-size: 20px; font-weight: bold">Hola, <strong style="color: #E41F1A;"> ${name}</strong></p>
                               <p  style="font-size: 15px; line-height:23px;padding:5px 15px 15px;">Gracias por registrarte en sendiit. Por favor, confirma tu email dando click al siguiente botón: </p>
-                              <a  style="background-color: #E41F1A;color:#ffffff; text-decoration: none; padding: 12px 20px;border-radius: 15px;font-weight: bold;" href=http://127.0.0.1:5173/auth/confirm/${confirmationCode}/> Da click aquí </a>
+                              <a  style="background-color: #E41F1A;color:#ffffff; text-decoration: none; padding: 12px 20px;border-radius: 15px;font-weight: bold;" href=http://localhost:5173/auth/confirm/${confirmationCode}/> Da click aquí </a>
                               
                               </td>
                         </tr>
@@ -315,15 +315,18 @@ const sendDataPackage = async (paquete, usuario, origen, destino, destinatario) 
                             <h1 style="color:#212E46;">Detalles de envío</h1>
                             <p style="font-size: 20px; font-weight: bold">Hola, <strong style="color: #E41F1A;"> ${usuario.name}</strong></p>
                             <p  style="font-size: 15px; line-height:23px;padding:5px 15px 15px;">Gracias por realizar tu pedido de envío en Sendiit.</p>
+                            <p  style="font-size: 15px; line-height:23px;padding:5px 15px 15px;">Tu paquete esta en estado ${paquete.estadoActual}  por lo que ahora deberas dejar tu paquete en el locker ${origen.charAt(0).toUpperCase() + origen.slice(1)}, posteriormente te estaremos enviando correos para dar seguimiento a tu paquete.</p>
                             <p style="font-size: 20px; font-weight: bold">Detalles del envío.</p>
                             <p  style="font-size: 15px; line-height:23px;padding:5px 15px 15px;">Descripción: ${paquete.descripcion}.</p>
                             <p  style="font-size: 15px; line-height:23px;padding:5px 15px 15px;">Locker de origen: ${origen.charAt(0).toUpperCase() + origen.slice(1)}.</p>
                             <p  style="font-size: 15px; line-height:23px;padding:5px 15px 15px;">Locker de destino: ${destino.charAt(0).toUpperCase() + destino.slice(1)}.</p>
                             <p  style="font-size: 15px; line-height:23px;padding:5px 15px 15px;">Destinatario: ${destinatario.nombre}.</p>
                             <p  style="font-size: 15px; line-height:23px;padding:5px 15px 15px;">Tamaño: ${paquete.tamano}.</p>
+                            <p  style="font-size: 15px; line-height:23px;padding:5px 15px 15px;">Estatus: ${paquete.estadoActual}.</p>
                             <p  style="font-size: 15px; line-height:23px;padding:5px 15px 15px;">Código QR para locker de origen:.</p>
                             <img src= ` + paquete.qrOrigen + `>
                             <p  style="font-size: 15px; line-height:23px;padding:5px 15px 15px;">Para dejar el paquete en ${origen.charAt(0).toUpperCase() + origen.slice(1)} deberas escanear el código QR en el locker y depositar el paquete.</p>
+                            <a  style="background-color: #E41F1A;color:#ffffff; text-decoration: none; padding: 12px 20px;border-radius: 15px;font-weight: bold;" href=http://localhost:5173/mis-paquetes>Ver mis paquetes</a>
                             </td>
                         </tr>
                     </table>
@@ -438,7 +441,7 @@ const sendNewDeliveryManEmail = async (deliveryManName, email, token) => {
                               <h1 style="color:#212E46;">Bienvenido a Sendiit ${deliveryManName}</h1>
                               <p style="font-size: 20px; font-weight: bold">Hola, <strong style="color: #E41F1A;"> ${deliveryManName}</strong></p>
                               <p  style="font-size: 15px; line-height:23px;padding:5px 0 15px;">Gracias por unirte a nosotros, para empezar porfavor crea una nueva contraseña: </p>
-                              <a  style="background-color: #E41F1A;color:#ffffff; text-decoration: none; padding: 12px 20px;border-radius: 15px;font-weight: bold;" href=http://127.0.0.1:5173/auth/new-password/${token}/> Da click aquí </a>
+                              <a  style="background-color: #E41F1A;color:#ffffff; text-decoration: none; padding: 12px 20px;border-radius: 15px;font-weight: bold;" href=http://localhost:5173/auth/new-password/${token}/> Da click aquí </a>
                               <p style="font-size: 15px; line-height:23px;padding:5px 0 15px;">Si no has sido tú quien ha solicitado esto, por favor ignora este email.</p> 
                               </td>
                         </tr>
