@@ -217,6 +217,7 @@ const deleteDeliveryMan = async (req, res = response) => {
 
 const updateDeliveryManStatus = async (req, res = response) => {
     try {
+        console.log(req.body);
         // console.log(req.body);
         const { deliveryManId } = req.body;
         const deliveryMan = await Usuario.findById(deliveryManId);
