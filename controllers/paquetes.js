@@ -119,11 +119,11 @@ const postPaquete = async (req, res = response) => {
         const usuario = await Usuario.findById(req.uid).populate('email').populate('name');
         //Enviamos los datos a la funcion para enviar el correo
         sendDataPackage(
-           paquete,
-           usuario,
-           req.body.origen,
-           req.body.destino,
-           req.body.destinatario
+            paquete,
+            usuario,
+            req.body.origen,
+            req.body.destino,
+            req.body.destinatario
         );
     }
     catch (error) {
@@ -139,10 +139,59 @@ const putPaquete = async (req, res = response) => {
     // const paquete = await findByIdAndUpdate( req.params.id, )
 }
 
+const handleStatusChange = async (req, res = response) => {
+    //TODO: CAMBIAR STATUS DEPENDIENDO DEL ACTUAL
+    console.log(req.body);
+    try {
+        const paquete = await Paquete.findById(req.body.paqueteID).populate('casilleroOrigen').populate('casilleroDestino').populate('usuario');
+        const { estadoActual } = paquete;
+        switch (estadoActual) {
+            case 'Por recibir':
+                paquete.estadoActual = 'En espera';
+                paquete.estadosFechas.enEspera = Date.now();
+                break;
+            case 'En espera':
+                paquete.estadoActual = 'En camino';
+                paquete.estadosFechas.enCamino = Date.now();
+                break;
+            case 'En camino':
+                paquete.estadoActual = 'En locker de destino';
+                paquete.estadosFechas.enLockerDeDestino = Date.now();
+                break;
+            case 'En locker de destino':
+                paquete.estadoActual = 'Recogido';
+                paquete.estadosFechas.recogido = Date.now();
+                break;
+            case 'Recogido':
+                paquete.estadoActual = 'En almacén';
+                paquete.estadosFechas.enAlmacen = Date.now();
+                break;
+            case 'En almacén':
+                paquete.estadoActual = 'Desechado';
+                paquete.estadosFechas.desechado = Date.now();
+                break;  
+
+            default:
+                break;
+        };
+        paquete.save();
+        res.json({
+            ok: true,
+            paquete
+        });
+    } catch (error) {
+        console.log(error);
+        res.json({
+            ok: false,
+        })
+    }
+};
+
 module.exports = {
     getPaquetes,
     getPaquetesCliente,
     getPaquete,
+    handleStatusChange,
     postPaquete,
     putPaquete
 };

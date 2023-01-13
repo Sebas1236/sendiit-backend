@@ -2,7 +2,7 @@
     PAQUETE ROUTERS
     HOST+ /api/paquete
 */
-const { getPaquetes, getPaquetesCliente, getPaquete, postPaquete } = require('../controllers/paquetes');
+const { getPaquetes, getPaquetesCliente, getPaquete, postPaquete, handleStatusChange } = require('../controllers/paquetes');
 const { validarJWT } = require('../middlewares/validar-jwt');
 
 const express = require('express');
@@ -21,6 +21,9 @@ router.get('/:id', getPaquete);
 
 // POST paquete
 router.post('/', postPaquete);
+
+//* Cambiar status del paquete
+router.post('/cambiar-status', handleStatusChange);
 
 
 

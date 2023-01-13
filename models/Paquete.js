@@ -48,7 +48,7 @@ const paqueteSchema = new mongoose.Schema({
         },
         direccion: {
             type: String,
-            required: true,
+            // required: true,
             minlength: 5,
             maxlength: 255
         }
@@ -89,22 +89,22 @@ const paqueteSchema = new mongoose.Schema({
             default: Date.now
         },
         enEspera: {
-            type: Date
+            type: Date,
         },
         enCamino: {
-            type: Date
+            type: Date,
         },
         enLockerDeDestino: {
-            type: Date
+            type: Date,
         },
         recogido: {
-            type: Date
+            type: Date,
         },
         enAlmacen: {
-            type: Date
+            type: Date,
         },
         desechado: {
-            type: Date
+            type: Date,
         }
     },
     qrOrigen:{
