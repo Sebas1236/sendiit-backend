@@ -1,5 +1,5 @@
 const { response } = require("express");
-const { sendDataPackage } = require("../helpers/nodemailer.config");
+const { sendDataPackage, sendPackageStatus } = require("../helpers/nodemailer.config");
 const { cabePaquete, tamanoPaquete } = require('../helpers/valTamPaquete');
 const Casillero = require("../models/Casillero");
 const Paquete = require('../models/Paquete');
@@ -157,6 +157,7 @@ const handleStatusChange = async (req, res = response) => {
             case 'En camino':
                 paquete.estadoActual = 'En locker de destino';
                 paquete.estadosFechas.enLockerDeDestino = Date.now();
+                sendPackageStatus(paquete, paquete.usuario, paquete.destinatario.email, msj=`Para recoger el paquete en ${paquete.casilleroOrigen.ubicacion.charAt(0).toUpperCase() + paquete.casilleroOrigen.ubicacion.slice(1)} deberas escanear el código QR en el locker y depositar el paquete.`);
                 break;
             case 'En locker de destino':
                 paquete.estadoActual = 'Recogido';
@@ -175,6 +176,7 @@ const handleStatusChange = async (req, res = response) => {
                 break;
         };
         paquete.save();
+        sendPackageStatus(paquete, paquete.usuario, paquete.usuario.email);
         res.json({
             ok: true,
             paquete

@@ -465,9 +465,122 @@ const sendNewDeliveryManEmail = async (deliveryManName, email, token) => {
     }
 }
 
+//*Status del paquete
+const sendPackageStatus = async (paquete, usuario, emailDestino, msj = "") => {
+    try {
+        transport.sendMail({
+            from: user,
+            to: emailDestino,
+            attachDataUrls: true,
+            subject: "Actualización del status de su paquete",
+            html: `
+        <head>
+        <style type='text/css'>
+            div{
+                margin: 0;
+                background-color:#f5f5f5;
+            }
+            table{
+                border-spacing: 0;
+            }
+            td{
+                padding: 0;
+            }
+            img{
+                border: 0;
+            }
+            .wrapper {
+                width: 100%;
+                table-layout: fixed;
+                background-color: #f5f5f5;
+                padding-bottom: 40px;
+            }
+            .menu {
+                background-color: #ffffff;
+                margin: 0 auto;
+                width:100%;
+                max-width: 600px;
+                border-spacing: 0;
+                font-family: sans-serif;
+                color:black;
+            }
+            @media screen and (max-width: 600px){
+            }
+        </style>
+        </head>
+        <div>
+            <center class="wrapper">
+                <table class="menu" width="100%">
+                <! -- SOCIAL MEDIA ICONS -->    
+                    <tr>
+                        <td>
+                            <table width="100%">
+                                <tr>
+                                    <td>
+                                    
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                <! -- LOGO SECTION -->    
+                    <tr>
+                        <td>
+                            <table width="100%" style="background-color: #212E46;">
+                                <tr>
+                                    <td style="text-align: center; padding: 10px;">
+                                    <img src="cid:sendiitLogo" width="180" alt="Logo">
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                <! -- TITLE, TEXT $BUTTON -->  
+                <tr>
+                <td >
+                    <table width="100%">
+                        <tr>
+                            <td style="text-align:center; padding: 15px;">
+                            <h1 style="color:#212E46;">Detalles de envío</h1>
+                            <p style="font-size: 20px; font-weight: bold">Hola, <strong style="color: #E41F1A;"> ${usuario.name}</strong></p>
+                            <p  style="font-size: 15px; line-height:23px;padding:5px 15px 15px;">Gracias por realizar tu pedido de envío en Sendiit.</p>
+                            <p  style="font-size: 15px; line-height:23px;padding:5px 15px 15px;">Tu paquete esta en estado ${paquete.estadoActual}. Te estaremos enviando correos para dar seguimiento a tu paquete.</p>
+                            <p style="font-size: 20px; font-weight: bold">Detalles del envío.</p>
+                            <p  style="font-size: 15px; line-height:23px;padding:5px 15px 15px;">Descripción: ${paquete.descripcion}.</p>
+                            <p  style="font-size: 15px; line-height:23px;padding:5px 15px 15px;">Locker de origen: ${paquete.casilleroOrigen.ubicacion.charAt(0).toUpperCase() + paquete.casilleroOrigen.ubicacion.slice(1)}.</p>
+                            <p  style="font-size: 15px; line-height:23px;padding:5px 15px 15px;">Locker de destino: ${paquete.casilleroDestino.ubicacion.charAt(0).toUpperCase() + paquete.casilleroDestino.ubicacion.slice(1)}.</p>
+                            <p  style="font-size: 15px; line-height:23px;padding:5px 15px 15px;">Destinatario: ${paquete.destinatario.nombre}.</p>
+                            <p  style="font-size: 15px; line-height:23px;padding:5px 15px 15px;">Tamaño: ${paquete.tamano}.</p>
+                            <p  style="font-size: 15px; line-height:23px;padding:5px 15px 15px;">Estatus: ${paquete.estadoActual}.</p>
+                            <p  style="font-size: 15px; line-height:23px;padding:5px 15px 15px;">Código QR para locker:</p>
+                            <img src= ` + paquete.qrOrigen + `>
+                            <p>${msj}</p>
+                            <a  style="background-color: #E41F1A;color:#ffffff; text-decoration: none; padding: 12px 20px;border-radius: 15px;font-weight: bold;" href=http://localhost:5173/mis-paquetes>Ver mis paquetes</a>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            </table>
+            </center>
+        </div>
+        `,
+            attachments: {
+                filename: 'logo_sendiit-light.png',
+                path: __dirname + '/logo_sendiit-light.png',
+                cid: 'sendiitLogo'
+            },
+
+        }).catch(error => console.log(error));
+    } catch (e) {
+        console.log(e);
+    }
+}
+
 module.exports = {
     sendConfirmationEmail,
     sendRecoverEmail,
     sendDataPackage,
     sendNewDeliveryManEmail,
+    sendPackageStatus,
 }
